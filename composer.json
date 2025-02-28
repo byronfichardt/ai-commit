@@ -1,5 +1,5 @@
 {
-    "name": "byron/ai-commit",
+    "name": "byron/ai-git-automation",
     "description": "AI-powered Git automation for commit messages and PR summaries",
     "keywords": ["git", "ai", "openai", "claude", "commit", "pr", "pull request"],
     "homepage": "https://github.com/byron/ai-commit",
