@@ -54,6 +54,9 @@ return [
     */
 
     'providers' => [
+        \LaravelZero\Framework\Providers\Core\CoreServiceProvider::class,
+        \LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderServiceProvider::class,
+        \LaravelZero\Framework\Providers\Composer\ComposerServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AIServiceProvider::class,
     ],
@@ -71,6 +74,8 @@ return [
 
     'aliases' => [
         'Http' => Illuminate\Support\Facades\Http::class,
+        'App' => Illuminate\Support\Facades\App::class,
+        'Config' => Illuminate\Support\Facades\Config::class,
     ],
 
 ];
