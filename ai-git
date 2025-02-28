@@ -22,7 +22,7 @@ fi
 
 # If we found the vendor directory, determine the package directory
 if [[ -n $VENDOR_DIR ]]; then
-    PACKAGE_DIR="$VENDOR_DIR/byron/ai-commit"
+    PACKAGE_DIR="$VENDOR_DIR/byron/ai-git-automation"
 fi
 
 # Get the current working directory
