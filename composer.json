@@ -13,9 +13,9 @@
     ],
     "require": {
         "php": "^8.2.0",
-        "laravel-zero/framework": "^11.36.1",
+        "ext-sodium": "*",
         "guzzlehttp/guzzle": "^7.8",
-        "ext-sodium": "*"
+        "laravel-zero/framework": "^11.36"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.8",

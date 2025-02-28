@@ -54,11 +54,11 @@ return [
     */
 
     'providers' => [
-        \LaravelZero\Framework\Providers\Core\CoreServiceProvider::class,
-        \LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderServiceProvider::class,
-        \LaravelZero\Framework\Providers\Composer\ComposerServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AIServiceProvider::class,
+        LaravelZero\Framework\Providers\Composer\ComposerServiceProvider::class,
+        LaravelZero\Framework\Providers\CommandRecorder\CommandRecorderServiceProvider::class,
+        LaravelZero\Framework\Providers\Filesystem\FilesystemServiceProvider::class,
     ],
 
     /*
