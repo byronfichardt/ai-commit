@@ -31,7 +31,10 @@ class AiCommitCommand extends Command
         // Change to the specified working directory if provided
         $workingDir = $this->option('working-dir');
         if ($workingDir) {
-            chdir($workingDir);
+            if (!is_dir($workingDir)) {
+                $this->error("The specified working directory does not exist: {$workingDir}");
+                return 1;
+            }
         }
 
         // Check if Git is installed
@@ -100,36 +103,24 @@ class AiCommitCommand extends Command
     }
 
     /**
-     * Check if Git is installed
-     */
-    private function isGitInstalled(): bool
-    {
-        $process = new Process(['git', '--version']);
-        $process->run();
-
-        return $process->isSuccessful();
-    }
-
-    /**
      * Check if current directory is a Git repository
      */
     private function isGitRepository(): bool
     {
+        // If using Laravel Sail, we need to check the host directory
+        $workingDir = $this->option('working-dir') ?: getcwd();
+        
+        // Check if .git directory exists in the working directory
+        if (is_dir($workingDir . '/.git')) {
+            return true;
+        }
+
+        // Fallback to git command check
         $process = new Process(['git', 'rev-parse', '--is-inside-work-tree']);
+        $process->setWorkingDirectory($workingDir);
         $process->run();
 
         return $process->isSuccessful();
-    }
-
-    /**
-     * Check if there are staged changes
-     */
-    private function hasStagedChanges(): bool
-    {
-        $process = new Process(['git', 'diff', '--cached', '--name-only']);
-        $process->run();
-
-        return !empty(trim($process->getOutput()));
     }
 
     /**
@@ -137,7 +128,10 @@ class AiCommitCommand extends Command
      */
     private function getStagedDiff(): string
     {
+        $workingDir = $this->option('working-dir') ?: getcwd();
+        
         $process = new Process(['git', 'diff', '--cached']);
+        $process->setWorkingDirectory($workingDir);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -148,15 +142,46 @@ class AiCommitCommand extends Command
     }
 
     /**
+     * Check if there are staged changes
+     */
+    private function hasStagedChanges(): bool
+    {
+        $workingDir = $this->option('working-dir') ?: getcwd();
+        
+        $process = new Process(['git', 'diff', '--cached', '--name-only']);
+        $process->setWorkingDirectory($workingDir);
+        $process->run();
+
+        return !empty(trim($process->getOutput()));
+    }
+
+    /**
      * Commit with the given message
      */
     private function commitWithMessage(string $message): void
     {
+        $workingDir = $this->option('working-dir') ?: getcwd();
+        
         $process = new Process(['git', 'commit', '-m', $message]);
+        $process->setWorkingDirectory($workingDir);
         $process->run();
 
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+
+    /**
+     * Check if Git is installed
+     */
+    private function isGitInstalled(): bool
+    {
+        $workingDir = $this->option('working-dir') ?: getcwd();
+        
+        $process = new Process(['git', '--version']);
+        $process->setWorkingDirectory($workingDir);
+        $process->run();
+
+        return $process->isSuccessful();
     }
 } 

@@ -44,12 +44,16 @@ CLAUDE_MAX_TOKENS=500
 ### Generating Commit Messages
 
 ```bash
+# If using Laravel directly
 php artisan ai:commit
+
+# If using Laravel Sail
+sail artisan ai:commit --working-dir=/var/www/html
 ```
 
 Options:
 - `--m|message`: Manually specify a commit message
-- `--working-dir`: Specify the working directory
+- `--working-dir`: Specify the working directory (required when using Laravel Sail)
 
 The command will:
 1. Check if there are staged changes
@@ -58,10 +62,26 @@ The command will:
 4. Allow you to edit the message if needed
 5. Commit the changes with the approved message
 
+### Using with Laravel Sail
+
+When using Laravel Sail, you need to specify the working directory because the command runs inside the Docker container. The working directory should be set to `/var/www/html` which is the default Laravel Sail project directory:
+
+```bash
+# Generate commit message
+sail artisan ai:commit --working-dir=/var/www/html
+
+# Generate PR summary
+sail artisan ai:pr-summary --working-dir=/var/www/html [base] [head]
+```
+
 ### Generating PR Summaries
 
 ```bash
+# If using Laravel directly
 php artisan ai:pr-summary [base] [head]
+
+# If using Laravel Sail
+sail artisan ai:pr-summary --working-dir=/var/www/html [base] [head]
 ```
 
 Arguments:
@@ -72,7 +92,7 @@ Options:
 - `--main`: Generate a summary for merging to main branch
 - `--copy`: Copy the summary to clipboard
 - `--output`: Output file path to save the summary
-- `--working-dir`: Specify the working directory
+- `--working-dir`: Specify the working directory (required when using Laravel Sail)
 
 ### GitHub Action Integration
 
