@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Commands;
+namespace Byron\AiGit\Commands;
 
-use App\Services\AIService;
-use LaravelZero\Framework\Commands\Command;
+use Byron\AiGit\Services\AIService;
+use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 

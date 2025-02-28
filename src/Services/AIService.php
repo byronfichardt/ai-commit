@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace Byron\AiGit\Services;
 
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Http;
 
 class AIService
 {
