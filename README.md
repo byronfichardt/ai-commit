@@ -46,7 +46,7 @@ The package includes a GitHub Action that automatically fills PR descriptions wh
 
 1. Add the package to your project using Composer:
    ```bash
-   composer require byron/ai-commit
+   composer require byron/ai-git-automation
    ```
 
 2. Create a `.env` file in your project root (if not already present) and add your AI provider API key:
@@ -65,8 +65,8 @@ That's it! The package is now installed and ready to use within your project.
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/byron/ai-commit.git
-   cd ai-commit
+   git clone https://github.com/byron/ai-git-automation.git
+   cd ai-git-automation
    ```
 
 2. Install dependencies:
