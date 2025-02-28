@@ -1,0 +1,71 @@
+name: Auto-generate PR Description
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - dev
+      - main
+
+jobs:
+  generate-pr-description:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.body == ''
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, zip
+          tools: composer:v2
+          
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction
+        
+      - name: Generate PR description
+        id: generate-description
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          AI_PROVIDER: ${{ secrets.AI_PROVIDER || 'openai' }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+        run: |
+          # Determine if this is a merge to main
+          if [[ "$PR_BASE" == "main" ]]; then
+            MAIN_FLAG="--main"
+          else
+            MAIN_FLAG=""
+          fi
+          
+          # Generate PR description
+          DESCRIPTION=$(php application ai-pr-summary $PR_BASE $PR_HEAD $MAIN_FLAG)
+          
+          # Format for GitHub Actions output
+          DESCRIPTION="${DESCRIPTION//'%'/'%25'}"
+          DESCRIPTION="${DESCRIPTION//$'\n'/'%0A'}"
+          DESCRIPTION="${DESCRIPTION//$'\r'/'%0D'}"
+          
+          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+          
+      - name: Update PR description
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const description = process.env.PR_DESCRIPTION;
+            
+            github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: description
+            });
+        env:
+          PR_DESCRIPTION: ${{ steps.generate-description.outputs.description }} 
