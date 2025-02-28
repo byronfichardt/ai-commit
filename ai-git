@@ -3,19 +3,14 @@
 
 # Determine the location of this script and the package
 if [[ -n $COMPOSER_VENDOR_DIR ]]; then
-    # If installed via Composer and COMPOSER_VENDOR_DIR is set
     VENDOR_DIR="$COMPOSER_VENDOR_DIR"
 elif [[ "$0" == *"vendor/bin/ai-git" ]]; then
-    # If running from vendor/bin
     VENDOR_DIR=$(dirname $(dirname "$0"))
 else
-    # Fallback to the script's directory
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     if [[ "$SCRIPT_DIR" == *"/vendor/bin" ]]; then
-        # If in vendor/bin
         VENDOR_DIR=$(dirname "$SCRIPT_DIR")
     else
-        # Assume we're in the package root
         PACKAGE_DIR="$SCRIPT_DIR"
     fi
 fi
@@ -32,30 +27,12 @@ CURRENT_DIR="$(pwd)"
 if [ "$1" == "ai-commit" ]; then
     # If explicitly using ai-commit command
     shift  # Remove the first argument
-    if [[ -n $PACKAGE_DIR ]]; then
-        cd "$PACKAGE_DIR"
-        php ai-commit ai-commit --working-dir="$CURRENT_DIR" "$@"
-    else
-        php ai-commit ai-commit --working-dir="$CURRENT_DIR" "$@"
-    fi
+    php "$PACKAGE_DIR/ai-commit" ai-commit --working-dir="$CURRENT_DIR" "$@"
 elif [ "$1" == "ai-pr-summary" ]; then
     # If using ai-pr-summary command
     shift  # Remove the first argument
-    if [[ -n $PACKAGE_DIR ]]; then
-        cd "$PACKAGE_DIR"
-        php ai-commit ai-pr-summary --working-dir="$CURRENT_DIR" "$@"
-    else
-        php ai-commit ai-pr-summary --working-dir="$CURRENT_DIR" "$@"
-    fi
+    php "$PACKAGE_DIR/ai-commit" ai-pr-summary --working-dir="$CURRENT_DIR" "$@"
 else
     # Default to ai-commit if no specific command provided
-    if [[ -n $PACKAGE_DIR ]]; then
-        cd "$PACKAGE_DIR"
-        php ai-commit ai-commit --working-dir="$CURRENT_DIR" "$@"
-    else
-        php ai-commit ai-commit --working-dir="$CURRENT_DIR" "$@"
-    fi
+    php "$PACKAGE_DIR/ai-commit" ai-commit --working-dir="$CURRENT_DIR" "$@"
 fi
-
-# Return to the original directory
-cd "$CURRENT_DIR"
